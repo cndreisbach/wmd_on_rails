@@ -19,5 +19,25 @@ module WmdOnRails
       
       content_tag(tag, '', :class => html_class)
     end
+
+    def create_wmd(textarea_id, preview_id = nil)
+      js = <<EOF
+var textarea = document.getElementById(#{textarea_id.inspect});
+EOF
+      if preview_id
+        js += <<EOF
+var preview = document.getElementById(#{preview_id.inspect});
+var panes = {input: textarea, preview: preview, output: null};
+var previewManager = new Attacklab.wmd.previewManager(panes);
+var editor = new Attacklab.wmd.editor(textarea, previewManager.refresh);
+EOF
+      else
+        js += <<EOF
+var editor = new Attacklab.wmd.editor(textarea);
+EOF
+      end
+
+      javascript_tag js
+    end
   end
 end
